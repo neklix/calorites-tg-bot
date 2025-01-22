@@ -6,4 +6,4 @@ COPY src/ /app
 
 RUN pip install --no-cache-dir -r requirements.txt
 
-CMD ["python3", "bot.py"]
+CMD ["python3", "-u", "bot.py"]
