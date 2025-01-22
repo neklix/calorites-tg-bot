@@ -266,8 +266,12 @@ async def set_water_target(message: Message, state: FSMContext):
 async def set_water_target_value(message: Message, state: FSMContext):
     user_id = message.from_user.id
     try:
+        temperature = await owm_api.get_weather(result["lat"], result["lon"])
+    except APIError:
+        temperature = 0
+    try:
         if message.text.lower() == 'auto':
-            await apply_or_check_existing(user_id, lambda x: x.water.calculate_target())
+            await apply_or_check_existing(user_id, lambda x: x.water.calculate_target(x.weight, temperature))
         else:
             await apply_or_check_existing(user_id, lambda x: x.water.set_target(message.text))
     except ValidationError:
@@ -295,7 +299,7 @@ async def set_calories_target_value(message: Message, state: FSMContext):
     user_id = message.from_user.id
     try:
         if message.text.lower() == 'auto':
-            await apply_or_check_existing(user_id, lambda x: x.calories.calculate_target())
+            await apply_or_check_existing(user_id, lambda x: x.calories.calculate_target(x.age, x.height, x.weight))
         else:
             await apply_or_check_existing(user_id, lambda x: x.calories.set_target(message.text))
     except ValidationError:
