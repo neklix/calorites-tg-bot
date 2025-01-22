@@ -265,6 +265,7 @@ async def set_water_target(message: Message, state: FSMContext):
 @router.message(TargetsForm.water)
 async def set_water_target_value(message: Message, state: FSMContext):
     user_id = message.from_user.id
+    _, result = await apply_or_check_existing(user_id, lambda x: x.get_geo())
     try:
         temperature = await owm_api.get_weather(result["lat"], result["lon"])
     except APIError:
