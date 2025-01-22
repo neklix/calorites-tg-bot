@@ -24,6 +24,7 @@ class OpenWeatherMapAPI:
                         lon = data["coord"].get("lon")
                         if lat is None or lon is None:
                             raise APIError("Город не найден")
+                        print(f"Получили координаты ({lat}, {lon}) для города {city_nm}")
                         return lat, lon
                     print(f"Ошибка OpenWeatherMap API: {response.status}, {await response.text()}")
                     raise APIError("Город не найден")
@@ -47,6 +48,7 @@ class OpenWeatherMapAPI:
                         max_temp = data["daily"][0]["temp"].get("max")
                         if max_temp is None:
                             raise APIError(f"Не удалось получить прогноз погоды для координат {lat}, {lon}")
+                        print(f"Получили температуру {max_temp} для координат ({lat}, {lon})")
                         return max_temp
                     print(f"Ошибка OpenWeatherMap API: {response.status}, {await response.text()}")
                     raise APIError(f"Не удалось получить прогноз погоды для координат {lat}, {lon}")
@@ -79,6 +81,7 @@ class FoodAPI:
                         calories = data["products"][0].get("nutriments", {}).get("energy-kcal_100g")
                         if product_name is None or calories is None:
                             raise APIError(f"Продукт {food_name} не найден или для него не найдено количество калорий")
+                        print(f"Нашли продукт {product_name} с {calories} ккал на 100 кг")
                         return product_name, calories
                     print(f"Ошибка OpenFoodFacts API: {response.status}, {await response.text()}")
                     raise APIError(f"Продукт {food_name} не найден или для него не найдено количество калорий")
@@ -107,6 +110,7 @@ class TrainAPI:
                         name = data[0].get("name")
                         if calories is None or name is None:
                             raise APIError(f"Тренировка {kind} не найдена")
+                        print(f"Нашли тренировку {name} с {calories} потраченных ккал")
                         return name, calories
                     print(f"Ошибка api-ninjas API: {response.status}, {await response.text()}")
                     raise APIError(f"Тренировка {kind} не найдена")
