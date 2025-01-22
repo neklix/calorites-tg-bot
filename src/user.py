@@ -1,5 +1,5 @@
 import asyncio
-from validators import validate_str, validate_int, validate_float, ValidationError
+from validators import validate_str, validate_int, validate_float
 from resources import Water, Calories
 
 
@@ -28,18 +28,18 @@ class UserInfo:
 
     async def set_weight(self, weight):
         self.weight = validate_float(weight)
-    
+
     async def get_all_info(self):
         return (""
         f"Ваше имя: {self.name}\n"
         f"Ваш возраст: {self.age}\n"
-        f"Ваш город: {self.geo["city"]} ({self.geo["lat"]}, {self.geo["lon"]})\n"
+        f"Ваш город: {self.geo['city']} ({self.geo['lat']}, {self.geo['lon']})\n"
         f"Ваш рост (см): {self.height}\n"
         f"Ваш вес (кг): {self.weight}")
-    
+
     async def is_form_filled(self):
         return all([self.name, self.age, self.geo, self.height, self.weight])
-    
+
     async def get_geo(self):
         return self.geo
 

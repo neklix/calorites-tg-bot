@@ -1,5 +1,5 @@
-import aiohttp
 import asyncio
+import aiohttp
 
 class APIError(Exception):
     def __init__(self, message):
@@ -10,7 +10,7 @@ class OpenWeatherMapAPI:
     def __init__(self, api_key):
         self.api_key = api_key
         self.timeout = 30 # seconds
-    
+
     async def geocoding(self, city_nm):
         url = f"http://api.openweathermap.org/data/2.5/weather?q={city_nm}&appid={self.api_key}"
         async with aiohttp.ClientSession() as session:
@@ -25,18 +25,18 @@ class OpenWeatherMapAPI:
                         if lat is None or lon is None:
                             raise APIError("Город не найден")
                         return lat, lon
-                    else:
-                        print(f"Ошибка OpenWeatherMap API: {response.status}, {await response.text()}")
-                        raise APIError("Город не найден")
+                    print(f"Ошибка OpenWeatherMap API: {response.status}, {await response.text()}")
+                    raise APIError("Город не найден")
             except aiohttp.ClientError as e:
                 print(f"Ошибка OpenWeatherMap API: {e}")
-                raise APIError("Ошибка при запросе к API")
-            except asyncio.TimeoutError:
+                raise APIError("Ошибка при запросе к API") from e
+            except asyncio.TimeoutError as e:
                 print("Таймаут при запросе к OpenWeatherMap API")
-                raise APIError("Таймаут при запросе к API")
-    
+                raise APIError("Таймаут при запросе к API") from e
+
     async def get_weather(self, lat, lon):
-        url = f"https://api.openweathermap.org/data/3.0/onecall?lat={lat}&lon={lon}&exclude=minutely,hourly,current,alerts&appid={self.api_key}&units=metric"
+        url = "https://api.openweathermap.org/data/3.0/onecall?"
+        f"lat={lat}&lon={lon}&exclude=minutely,hourly,current,alerts&appid={self.api_key}&units=metric"
         async with aiohttp.ClientSession() as session:
             try:
                 async with session.get(url, timeout=self.timeout) as response:
@@ -48,20 +48,19 @@ class OpenWeatherMapAPI:
                         if max_temp is None:
                             raise APIError(f"Не удалось получить прогноз погоды для координат {lat}, {lon}")
                         return max_temp
-                    else:
-                        print(f"Ошибка OpenWeatherMap API: {response.status}, {await response.text()}")
-                        raise APIError(f"Не удалось получить прогноз погоды для координат {lat}, {lon}")
+                    print(f"Ошибка OpenWeatherMap API: {response.status}, {await response.text()}")
+                    raise APIError(f"Не удалось получить прогноз погоды для координат {lat}, {lon}")
             except aiohttp.ClientError as e:
                 print(f"Ошибка OpenWeatherMap API: {e}")
-                raise APIError("Ошибка при запросе к API")
-            except asyncio.TimeoutError:
+                raise APIError("Ошибка при запросе к API") from e
+            except asyncio.TimeoutError as e:
                 print("Таймаут при запросе к OpenWeatherMap API")
-                raise APIError("Таймаут при запросе к API")
+                raise APIError("Таймаут при запросе к API") from e
 
 class FoodAPI:
     def __init__(self):
         self.timeout = 30
-    
+
     async def get_calories(self, food_name):
         # метод почти как в примере дз
         url = ("https://world.openfoodfacts.org/cgi/search.pl?action=process"
@@ -81,24 +80,22 @@ class FoodAPI:
                         if product_name is None or calories is None:
                             raise APIError(f"Продукт {food_name} не найден или для него не найдено количество калорий")
                         return product_name, calories
-                    else:
-                        print(f"Ошибка OpenFoodFacts API: {response.status}, {await response.text()}")
+                    print(f"Ошибка OpenFoodFacts API: {response.status}, {await response.text()}")
+                    raise APIError(f"Продукт {food_name} не найден или для него не найдено количество калорий")
             except aiohttp.ClientError as e:
                 print(f"Ошибка OpenFoodFacts API: {e}")
-                raise APIError("Ошибка при запросе к API")
-            except asyncio.TimeoutError:
+                raise APIError("Ошибка при запросе к API") from e
+            except asyncio.TimeoutError as e:
                 print("Таймаут при запросе к OpenFoodFacts API")
-                raise APIError("Таймаут при запросе к API")
+                raise APIError("Таймаут при запросе к API") from e
 
 class TrainAPI:
     def __init__(self, api_key):
         self.timeout = 30
         self.headers = {"X-Api-Key": api_key}
-        
-    
+
     async def get_calories(self, kind, minutes):
         url = f"https://api.api-ninjas.com/v1/caloriesburned?activity={kind}&time={minutes}"
-        
         async with aiohttp.ClientSession() as session:
             try:
                 async with session.get(url, timeout=self.timeout, headers=self.headers) as response:
@@ -111,13 +108,11 @@ class TrainAPI:
                         if calories is None or name is None:
                             raise APIError(f"Тренировка {kind} не найдена")
                         return name, calories
-                    else:
-                        print(f"Ошибка api-ninjas API: {response.status}, {await response.text()}")
-                        raise APIError(f"Тренировка {kind} не найдена")
+                    print(f"Ошибка api-ninjas API: {response.status}, {await response.text()}")
+                    raise APIError(f"Тренировка {kind} не найдена")
             except aiohttp.ClientError as e:
                 print(f"Ошибка api-ninjas API: {e}")
-                raise APIError("Ошибка при запросе к API")
-            except asyncio.TimeoutError:
+                raise APIError("Ошибка при запросе к API") from e
+            except asyncio.TimeoutError as e:
                 print("Таймаут при запросе к api-ninjas API")
-                raise APIError("Таймаут при запросе к API")
-
+                raise APIError("Таймаут при запросе к API") from e

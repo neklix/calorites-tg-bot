@@ -105,7 +105,7 @@ async def fill_name(message: Message, state: FSMContext):
         return
     await message.reply("Введите Ваш возраст (целое число)")
     await state.set_state(UserInfoForm.age)
-    
+
 @router.message(UserInfoForm.age)
 async def fill_age(message: Message, state: FSMContext):
     try:
@@ -206,7 +206,8 @@ async def log_workout(message: Message):
         workout_minutes = validate_int(message.text.split()[-1])
         matched_name, workout_calories = await train_api.get_calories(workout_kind, workout_minutes)
         water_needs = 200 * workout_minutes / 30
-        is_user_in_storage, reply = await apply_or_check_existing(user_id, lambda x: x.add_workout(workout_calories, water_needs))
+        is_user_in_storage, reply = await apply_or_check_existing(
+            user_id, lambda x: x.add_workout(workout_calories, water_needs))
     except ValidationError:
         await message.reply(
             "Ошибка в формате.\n"
@@ -257,7 +258,8 @@ async def set_water_target(message: Message, state: FSMContext):
         await message.reply("Ваших данных нет в базе.\n"
                             "Для ввода данных введите команду /fill_info")
         return
-    await message.reply("Введите цель по воде (в миллилитрах).\nЕсли хотите автоматически вычислить цель, введите 'auto'")
+    await message.reply(
+        "Введите цель по воде (в миллилитрах).\nЕсли хотите автоматически вычислить цель, введите 'auto'")
     await state.set_state(TargetsForm.water)
 
 @router.message(TargetsForm.water)
