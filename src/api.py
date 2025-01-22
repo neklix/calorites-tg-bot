@@ -36,8 +36,8 @@ class OpenWeatherMapAPI:
                 raise APIError("Таймаут при запросе к API") from e
 
     async def get_weather(self, lat, lon):
-        url = "https://api.openweathermap.org/data/3.0/onecall?"
-        f"lat={lat}&lon={lon}&exclude=minutely,hourly,current,alerts&appid={self.api_key}&units=metric"
+        url = ("https://api.openweathermap.org/data/3.0/onecall?"
+        f"lat={lat}&lon={lon}&exclude=minutely,hourly,current,alerts&appid={self.api_key}&units=metric")
         async with aiohttp.ClientSession() as session:
             try:
                 async with session.get(url, timeout=self.timeout) as response:
